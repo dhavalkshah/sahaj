@@ -74,7 +74,7 @@ function calcTotalCost(cardId, fromDateStr, toDateStr){
             totCost = totCost + element.actualFare;
         }
     });
-    console.log('Total Cost is: ', totCost);
+    console.log('Total Cost between '+fromDateStr+' and '+toDateStr+' is', totCost);
 }
 
 module.exports = {

@@ -1,6 +1,12 @@
 const app = require('./app');
 const dbHandler = require('./dbHandler');
 
+/**
+ * Returns true if either the start or end time falls in peak hour for the given date
+ * @param {*} appCtx 
+ * @param {*} msgCtx 
+ * @returns 
+ */
 function isTravelDuringPeak(appCtx, msgCtx){
     for (let index = 0; index < appCtx.config.peak[msgCtx.inDateTime.day].length; index++) {
         const element = appCtx.config.peak[msgCtx.inDateTime.day][index];   
@@ -14,6 +20,12 @@ function isTravelDuringPeak(appCtx, msgCtx){
     return false;
 }
 
+/**
+ * Calculate the fare as if there were no capping
+ * @param {*} appCtx 
+ * @param {*} msgCtx 
+ * @returns 
+ */
 function calcIntendedFare(appCtx, msgCtx){
     if(msgCtx.isPeak){
         return appCtx.config.fare[msgCtx.fromZone][msgCtx.toZone]['peak'];
@@ -23,6 +35,11 @@ function calcIntendedFare(appCtx, msgCtx){
     }
 }
 
+/**
+ * Calculate/update daily cap for the given card
+ * @param {*} appCtx 
+ * @param {*} msgCtx 
+ */
 function calcDailyCap(appCtx, msgCtx){
     let dailyRec = dbHandler.getCardsDateRecord(appCtx, msgCtx.cardId, msgCtx.inDateTime.dtStr);
     if(dailyRec.maxCapAllowed < appCtx.config.fare[msgCtx.fromZone][msgCtx.toZone].dailyCap){
@@ -30,6 +47,11 @@ function calcDailyCap(appCtx, msgCtx){
     }
 }
 
+/**
+ * Calculate/update weekly cap for the given card
+ * @param {*} appCtx 
+ * @param {*} msgCtx 
+ */
 function calcWeeklyCap(appCtx, msgCtx){
     let weeklyRec = dbHandler.getCardsWeeksRecord(appCtx, msgCtx.cardId, msgCtx.inDateTime.week);
     if(weeklyRec.maxCapAllowed < appCtx.config.fare[msgCtx.fromZone][msgCtx.toZone].weeklyCap){
@@ -37,6 +59,13 @@ function calcWeeklyCap(appCtx, msgCtx){
     }
 }
 
+/**
+ * Apply weekly logic to see if the weekly cap has been reached
+ * @param {*} appCtx 
+ * @param {*} msgCtx 
+ * @param {*} intendedFare 
+ * @returns 
+ */
 function calcFareBasedonWeekly(appCtx, msgCtx, intendedFare){
     let weeklyRec = dbHandler.getCardsWeeksRecord(appCtx, msgCtx.cardId, msgCtx.inDateTime.week);
     if((weeklyRec.totActualFare + intendedFare) > weeklyRec.maxCapAllowed){
@@ -45,6 +74,13 @@ function calcFareBasedonWeekly(appCtx, msgCtx, intendedFare){
     return intendedFare;
 }
 
+/**
+ * Apply daily logic to see if the daily cap has been reached
+ * @param {*} appCtx 
+ * @param {*} msgCtx 
+ * @param {*} intendedFare 
+ * @returns 
+ */
 function calcFareBasedonDaily(appCtx, msgCtx, intendedFare){
     let dailyRec = dbHandler.getCardsDateRecord(appCtx, msgCtx.cardId, msgCtx.inDateTime.dtStr);
     if( (dailyRec.totActualFare + intendedFare) > dailyRec.maxCapAllowed){
@@ -53,6 +89,11 @@ function calcFareBasedonDaily(appCtx, msgCtx, intendedFare){
     return intendedFare;
 }
 
+/**
+ * Calculate the fare for the transaction
+ * @param {*} appCtx 
+ * @param {*} msgCtx 
+ */
 function calcFareForTran(appCtx, msgCtx){
     msgCtx.isPeak = isTravelDuringPeak(appCtx, msgCtx);
     msgCtx.intendedFare = calcIntendedFare(appCtx, msgCtx);

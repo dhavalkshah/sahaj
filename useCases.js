@@ -68,4 +68,12 @@ app.tapIn('abc', '2021-08-16 10:30:00', 'Z2');
 app.tapOut('abc', '2021-08-16 10:32:00', 'Z1');
 
 
-app.calcTotalCost('abc');
+app.calcTotalCost('abc','2021-08-09','2021-08-09');
+app.calcTotalCost('abc','2021-08-10','2021-08-10');
+app.calcTotalCost('abc','2021-08-11','2021-08-11');
+app.calcTotalCost('abc','2021-08-12','2021-08-12');
+app.calcTotalCost('abc','2021-08-13','2021-08-13');
+app.calcTotalCost('abc','2021-08-14','2021-08-14');
+app.calcTotalCost('abc','2021-08-15','2021-08-15');
+app.calcTotalCost('abc','2021-08-16','2021-08-16');
+app.calcTotalCost('abc','2021-08-09','2021-08-16');
