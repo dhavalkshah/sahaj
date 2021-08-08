@@ -13,13 +13,14 @@ function padZero(ipNum){
 function getWeek(dt){
     if(dt.month() === 0 && dt.week() === 1 && dt.day() !== 1 && dt.date() < 7){
         let lastYearEnd = moment(dt.year()-1+'-12-31', 'YYYY-MM-DD');
-        return lastYearEnd.week();
+        let yr = dt.year()-1
+        return ''+yr+lastYearEnd.week();
     }
     else if(dt.day() === 0){
         let lastWeek = dt.subtract(1, 'days')
-        return lastWeek.week();
+        return ''+dt.year()+lastWeek.week();
     }
-    return dt.week();
+    return ''+dt.year()+dt.week();
 }
 
 function setErr(status, errCode, errMessage){
