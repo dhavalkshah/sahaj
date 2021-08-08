@@ -2,6 +2,7 @@ const config = require('./config.json');
 const val = require('./val');
 const dbHandler = require('./dbHandler');
 const tranHandler = require('./tran');
+var moment = require('moment');
 
 var dbConn = {};
 
@@ -64,10 +65,14 @@ function tapOut(cardId, outDateTime, toStationType) {
     }
 }
 
-function calcTotalCost(cardId){
+function calcTotalCost(cardId, fromDateStr, toDateStr){
     let totCost = 0;
+    let frmDate = (fromDateStr)?moment(fromDateStr, 'YYYY-MM-DD'): moment('1900-01-01','YYYY-MM-DD');
+    let toDate = (toDateStr)?moment(toDateStr, 'YYYY-MM-DD'):moment('9999-12-31','YYYY-MM-DD');
     appCtx.dbConn.tran.forEach(element => {
-        totCost = totCost + element.actualFare;
+        if(element.inDateTime.dt.isSameOrAfter(frmDate, 'day') && element.inDateTime.dt.isSameOrBefore(toDate, 'day')){
+            totCost = totCost + element.actualFare;
+        }
     });
     console.log('Total Cost is: ', totCost);
 }
