@@ -9,6 +9,28 @@ cd sahaj
 npm install
 ```
 
+# Methods 
+**tapIn**: Signifies the event when the unique metro card is tapped on the input terminal
+
+**Params**
+- cardId - Unique id for the metro card
+- dateTime - Date & time when the card was tapped on in-terminal, in YYYY-MM-DD hh:mm:ss format
+- stationType - The zone of the station from where the journey is being started
+
+**tapOut**: Signifies the event when the metro card is tapped on the output terminal
+
+**Params**
+- cardId - Unique id for the metro card
+- dateTime - Date & time when the card was tapped on out-terminal, in YYYY-MM-DD hh:mm:ss format
+- stationType - The zone of the station from where the journey is ended
+
+# Running
+create a useCases.js. Sample useCases.js is provided
+```
+node useCases.js
+```
+
+
 # Configurations
 - zones - Contains the valid list of zones
 - fare - Contains the following for a combination of zone
