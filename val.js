@@ -17,8 +17,7 @@ function getWeek(dt){
         return ''+yr+lastYearEnd.week();
     }
     else if(dt.day() === 0){
-        let lastWeek = dt.subtract(1, 'days')
-        return ''+dt.year()+lastWeek.week();
+        return getWeek(dt.subtract(1, 'days'));
     }
     return ''+dt.year()+dt.week();
 }
